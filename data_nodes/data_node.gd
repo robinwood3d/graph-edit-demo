@@ -15,12 +15,12 @@ var outputs: Array = []
 
 func _ready() -> void:
 	size = Vector2.ZERO
-	inputs.resize(get_connection_input_count())
+	inputs.resize(self.get_input_port_count())
 	params.resize(params_vbox.get_child_count())
-	outputs.resize(get_connection_output_count())
+	outputs.resize(self.get_output_port_count())
 	
 	for iid in inputs.size():
-		var field = get_child(get_connection_input_slot(iid)).get_child(1)
+		var field = get_child(self.get_input_port_slot(iid)).get_child(1)
 		if field is SpinBox:
 			field.value_changed.connect(_on_fields_updated)
 	
@@ -45,7 +45,7 @@ func evaluate(binds: Dictionary) -> void:
 
 func bind_input(binds: Dictionary) -> void:
 	for iid in inputs.size():
-		var field = get_child(get_connection_input_slot(iid)).get_child(1)
+		var field = get_child(self.get_input_port_slot(iid)).get_child(1)
 		if binds.has(iid):
 			if field is SpinBox:
 				field.set_value_no_signal(binds[iid])
@@ -58,7 +58,7 @@ func bind_input(binds: Dictionary) -> void:
 
 func fetch() -> void:
 	for iid in inputs.size():
-		var field = get_child(get_connection_input_slot(iid)).get_child(1)
+		var field = get_child(self.get_input_port_slot(iid)).get_child(1)
 		if field is SpinBox:
 			inputs[iid] = field.value
 	
@@ -74,7 +74,7 @@ func function() -> void:
 
 func push() -> void:
 	for oid in outputs.size():
-		var field = get_child(get_connection_output_slot(oid)).get_child(0)
+		var field = get_child(self.get_output_port_slot(oid)).get_child(0)
 		if field is Label:
 			field.text = str(outputs[oid])
 

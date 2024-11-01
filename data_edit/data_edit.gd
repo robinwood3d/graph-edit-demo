@@ -29,7 +29,7 @@ func add_datanode(node_name: String) -> void:
 	var node: DataNode = DataNodes.get_node(node_name).duplicate()
 	add_child(node)
 	node.position_offset = (scroll_offset + get_local_mouse_position()) / zoom
-	node.close_request.connect(_on_node_close_request.bind(node))
+	node.delete_request.connect(_on_node_close_request.bind(node))
 	node.popup_request.connect(_on_node_popup_request.bind(node))
 	node.user_update.connect(evaluate_datanodes)
 	
@@ -107,7 +107,7 @@ func sort_datanodes() -> bool:
 
 
 func toggle_arrange_button() -> void:
-	get_zoom_hbox().get_child(-1).disabled = selected_nodes.values().count(true) == 1
+	self.get_menu_hbox().get_child(-1).disabled = selected_nodes.values().count(true) == 1
 
 
 func unlink_datanode(from_node: StringName, from_port: int, to_node: StringName, to_port: int, sort_now: bool = true) -> void:
@@ -125,10 +125,10 @@ func unlink_datanode(from_node: StringName, from_port: int, to_node: StringName,
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	for conn in get_connection_list():
-		if conn.to == to_node and conn.to_port == to_port:
-			if conn.from == from_node and conn.from_port == from_port: return
+		if conn.to_node == to_node and conn.to_port == to_port:
+			if conn.from_node == from_node and conn.from_port == from_port: return
 			if not replace_links: return
-			unlink_datanode(conn.from, conn.from_port, conn.to, conn.to_port)
+			unlink_datanode(conn.from_node, conn.from_port, conn.to_node, conn.to_port)
 			break
 	link_datanode(from_node, from_port, to_node, to_port)
 
